@@ -35,7 +35,16 @@ export default {
 
     async getReviewers(): Promise<UserEntity[]> {
         const reviewers = await api.getReviewers()
-        return reviewers.results
+        const results = reviewers.results
+
+        if (results.length > 0) {
+            const accountIds = results.map(r => r.accountId)
+            const jiraUsers = await api.getUsers(accountIds)
+            const nameByAccountId = new Map(jiraUsers.map(u => [u.accountId, u.displayName]))
+            results.forEach(r => { r.displayName = nameByAccountId.get(r.accountId) })
+        }
+
+        return results
     }
 
 }

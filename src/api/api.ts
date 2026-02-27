@@ -108,6 +108,12 @@ export interface StatusEntity {
 export interface UserEntity {
     accountId: string;
     self: string;
+    displayName?: string;
+}
+
+export interface JiraUserEntity {
+    accountId: string;
+    displayName: string;
 }
 
 export interface ReviewersMetadataEntity {
@@ -214,6 +220,16 @@ export default {
             const response = await tempoAxios.get(`/timesheet-approvals/user/${credentials.accountId}/reviewers`)
             debugLog(response)
             return response.data
+        })
+    },
+
+    async getUsers(accountIds: string[]): Promise<JiraUserEntity[]> {
+        return execute(async () => {
+            const params = new URLSearchParams()
+            accountIds.forEach(id => params.append('accountId', id))
+            const response = await atlassianAxios.get(`/user/bulk?${params.toString()}`)
+            debugLog(response)
+            return response.data.values as JiraUserEntity[]
         })
     }
 }

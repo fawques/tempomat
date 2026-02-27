@@ -17,6 +17,7 @@ export async function render(reviewers: UserEntity[]) {
 
 function generateReviewerHeaders() {
     const headers = [
+        { content: chalk.bold.greenBright('Name'), hAlign: 'left' },
         { content: chalk.bold.greenBright('AccountId'), hAlign: 'right' }
     ]
     return {
@@ -45,8 +46,8 @@ async function generateUserContent(reviewers: UserEntity[]) {
     return Promise.all(
         reviewers.map(async (reviewer) => {
             const tableContent = {
-                // displayName is no longer returned
-                accountId: { colSpan: 1, content: reviewer.accountId, hAlign: 'left' }
+                name: { colSpan: 1, content: reviewer.displayName ?? "Missing displayName", hAlign: 'left' },
+                accountId: { colSpan: 1, content: reviewer.accountId, hAlign: 'right' }
             }
             return Object.values(tableContent)
         })
